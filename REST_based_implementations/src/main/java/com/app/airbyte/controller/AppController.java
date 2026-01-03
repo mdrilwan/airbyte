@@ -1,6 +1,8 @@
 package com.app.airbyte.controller;
 
+import com.app.airbyte.dto.Response;
 import com.app.airbyte.service.AppService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "App", description = "Functionalities related to Airbyte App")
 public class AppController {
 
-    @Autowired
     private final AppService appService;
 
     public AppController(AppService appService) {
@@ -22,10 +23,15 @@ public class AppController {
     }
 
     @GetMapping("/listSources")
-    public ResponseEntity<String> listSources() {
+    public ResponseEntity<Response<String>> listSources() {
+        Response<String> response = new Response<String>(
+                "Sources fetched successfully",
+                appService.listAllSources()
+        );
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(appService.listAllSources());
+                .body(response);
 
     }
 }

@@ -2,6 +2,7 @@ package com.app.airbyte.config;
 
 public class Constants {
     public static final String AIRBYTE_HOST = System.getenv("AIRBYTE_HOST");
+    public static final String AIRBYTE_WORKSPACE_ID = System.getenv("AIRBYTE_WORKSPACE_ID");
     public static final String AIRBYTE_USER_EMAIL = System.getenv("AIRBYTE_USER_EMAIL");
     public static final String AIRBYTE_PASSWORD = System.getenv("AIRBYTE_PASSWORD");
     public static final String AIRBYTE_SOURCE_LIST_API_URL = "/api/v1/source_definitions/list";

@@ -24,6 +24,7 @@ public class AppService {
     }
 
     public String listAllSources() {
+        System.out.println("--------------" + Constants.AIRBYTE_HOST);
         String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_SOURCE_LIST_API_URL;
 
         HttpHeaders headers = new HttpHeaders();
