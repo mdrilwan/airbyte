@@ -1,13 +1,13 @@
-package com.test.airbyte;
+package com.app.airbyte;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AirbyteApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AirbyteApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }

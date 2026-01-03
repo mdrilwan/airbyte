@@ -1,10 +1,10 @@
-package com.test.airbyte;
+package com.app.airbyte;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AirbyteApplicationTests {
+class ApplicationTests {
 
 	@Test
 	void contextLoads() {
