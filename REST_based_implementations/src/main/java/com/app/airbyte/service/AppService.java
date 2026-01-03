@@ -24,8 +24,22 @@ public class AppService {
     }
 
     public String listAllSources() {
-        System.out.println("--------------" + Constants.AIRBYTE_HOST);
         String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_SOURCE_LIST_API_URL;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(MediaType.parseMediaTypes("application/json"));
+        headers.set("Authorization", this.getUserHeader());
+
+        HttpEntity<String> entity = new HttpEntity<>("{}", headers);
+
+        String response = restTemplate.postForObject(url, entity, String.class);
+
+        return response;
+    }
+
+    public String listAllDest() {
+        String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_DEST_LIST_API_URL;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -2,9 +2,7 @@ package com.app.airbyte.controller;
 
 import com.app.airbyte.dto.Response;
 import com.app.airbyte.service.AppService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +22,17 @@ public class AppController {
 
     @GetMapping("/listSources")
     public ResponseEntity<Response<String>> listSources() {
-        Response<String> response = new Response<String>(
-                "Sources fetched successfully",
-                appService.listAllSources()
-        );
+        Response<String> response = new Response<String>("Sources fetched successfully", appService.listAllSources());
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+    @GetMapping("/listDestinations")
+    public ResponseEntity<Response<String>> listDestinations() {
+        Response<String> response = new Response<String>("Destinations fetched successfully", appService.listAllDest());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 }
