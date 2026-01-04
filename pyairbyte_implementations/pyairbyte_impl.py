@@ -1,30 +1,21 @@
 import airbyte as ab
-import pandas as pd
 
-# Path to your local JSON file
-json_file_path = "data.json"
+# Create and install the source:
+source: ab.Source = ab.get_source("source-faker")
 
-# Configure the File source
-source = ab.get_source(
-    "source-file",
+# Configure the source
+source.set_config(
     config={
-        "dataset_name": "example_data",
-        "format": "json",
-        "files": [
-            {
-                "url": f"file://{json_file_path}"
-            }
-        ]
-    }
+        "count": 50_000,  # Adjust this to get a larger or smaller dataset
+        "seed": 123,
+    },
 )
+# Verify the config and creds by running `check`:
+source.check()
 
-# Read records into a PyAirbyte stream
-streams = source.read()
+source.select_all_streams()
+read_result: ab.ReadResult = source.read()
 
-# Convert the first stream to a pandas DataFrame
-df = streams["example_data"].to_pandas()
-
-# Write to CSV
-df.to_csv("output.csv", index=False)
-
-print("JSON data written to output.csv")
+# Display or transform the loaded data
+products_df = read_result["products"].to_pandas()
+print(products_df)
