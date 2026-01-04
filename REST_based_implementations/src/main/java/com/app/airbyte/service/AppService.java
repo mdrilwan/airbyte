@@ -5,6 +5,7 @@ import com.app.airbyte.dto.ConnectorDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -102,4 +103,41 @@ public class AppService {
         }
         return result;
     }
+
+    public String getSourceConfigByDefinitionId(String sourceDefinitionId)
+            throws JsonProcessingException {
+
+        String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_SOURCE_CONFIG_API_URL;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(MediaType.parseMediaTypes("application/json"));
+        headers.set("Authorization", this.getUserHeader());
+
+        Map<String, String> body = new HashMap<>();
+        body.put("sourceDefinitionId", sourceDefinitionId);
+        body.put("workspaceId", Constants.AIRBYTE_WORKSPACE_ID);
+
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
+        return restTemplate.postForObject(url, entity, String.class);
+    }
+
+    public @Nullable String getDestinationConfigByDefinitionId(String destinationDefinitionId)
+            throws JsonProcessingException {
+
+        String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_DEST_CONFIG_API_URL;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(MediaType.parseMediaTypes("application/json"));
+        headers.set("Authorization", this.getUserHeader());
+
+        Map<String, String> body = new HashMap<>();
+        body.put("destinationDefinitionId", destinationDefinitionId);
+        body.put("workspaceId", Constants.AIRBYTE_WORKSPACE_ID);
+
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
+        return restTemplate.postForObject(url, entity, String.class);
+    }
+
 }

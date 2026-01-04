@@ -74,4 +74,35 @@ public class AppController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
+
+    @GetMapping("/source/config")
+    public ResponseEntity<Response<String>> getSourceConfig(
+            @RequestParam String sourceDefinitionId
+    ) {
+        try {
+            Response<String> response = new Response<>(
+                    "Source configuration fetched successfully",
+                    appService.getSourceConfigByDefinitionId(sourceDefinitionId)
+            );
+            return ResponseEntity.ok(response);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/destination/config")
+    public ResponseEntity<Response<String>> getDestinationConfig(
+            @RequestParam String destinationDefinitionId
+    ) {
+        try {
+            Response<String> response = new Response<>(
+                    "Destination configuration fetched successfully",
+                    appService.getDestinationConfigByDefinitionId(destinationDefinitionId)
+            );
+            return ResponseEntity.ok(response);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
