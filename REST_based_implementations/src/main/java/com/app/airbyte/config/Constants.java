@@ -7,6 +7,8 @@ public class Constants {
     public static final String AIRBYTE_PASSWORD = System.getenv("AIRBYTE_PASSWORD");
     public static final String AIRBYTE_SOURCE_LIST_API_URL = "/api/v1/source_definitions/list";
     public static final String AIRBYTE_DEST_LIST_API_URL = "/api/v1/destination_definitions/list";
+    public static final String AIRBYTE_SOURCE_CONFIG_API_URL = "/api/v1/source_definition_specifications/get";
+    public static final String AIRBYTE_DEST_CONFIG_API_URL = "/api/v1/destination_definition_specifications/get";
     public static final String AIRBYTE_CREATE_SOURCE_API_URL = "/api/v1/sources/create";
     public static final String AIRBYTE_CREATE_DEST_API_URL = "/api/v1/destinations/create";
 }
