@@ -1,13 +1,18 @@
 package com.app.airbyte.controller;
 
 import com.app.airbyte.dto.Response;
+import com.app.airbyte.dto.ConnectorDetails;
 import com.app.airbyte.service.AppService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/app")
@@ -21,16 +26,50 @@ public class AppController {
     }
 
     @GetMapping("/listSources")
-    public ResponseEntity<Response<String>> listSources() {
-        Response<String> response = new Response<String>("Sources fetched successfully", appService.listAllSources());
+    public ResponseEntity<Response<List<ConnectorDetails>>> listSources(
+            @RequestParam(name = "includeEnterpriseSources", required = false) Boolean includeEnterpriseSources,
+            @RequestParam(name = "includeMarketplaceSources", required = false) Boolean includeMarketplaceSources
+    ) {
+        if(includeEnterpriseSources == null) {
+            includeEnterpriseSources = false;
+        }
+        if(includeMarketplaceSources == null) {
+            includeMarketplaceSources = false;
+        }
+        Response<List<ConnectorDetails>> response = null;
+        try {
+            response = new Response<List<ConnectorDetails>>(
+                    "Sources fetched successfully",
+                    appService.listAllSources(includeEnterpriseSources, includeMarketplaceSources)
+            );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
     @GetMapping("/listDestinations")
-    public ResponseEntity<Response<String>> listDestinations() {
-        Response<String> response = new Response<String>("Destinations fetched successfully", appService.listAllDest());
+    public ResponseEntity<Response<List<ConnectorDetails>>> listDestinations(
+            @RequestParam(name = "includeEnterpriseSources", required = false) Boolean includeEnterpriseSources,
+            @RequestParam(name = "includeMarketplaceSources", required = false) Boolean includeMarketplaceSources
+    ) {
+        if(includeEnterpriseSources == null) {
+            includeEnterpriseSources = false;
+        }
+        if(includeMarketplaceSources == null) {
+            includeMarketplaceSources = false;
+        }
+        Response<List<ConnectorDetails>> response = null;
+        try {
+            response = new Response<List<ConnectorDetails>>(
+                    "Destinations fetched successfully",
+                    appService.listAllDest(includeEnterpriseSources, includeMarketplaceSources)
+                );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
 

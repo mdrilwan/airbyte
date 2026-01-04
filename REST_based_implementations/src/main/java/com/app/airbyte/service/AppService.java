@@ -1,6 +1,10 @@
 package com.app.airbyte.service;
 
 import com.app.airbyte.config.Constants;
+import com.app.airbyte.dto.ConnectorDetails;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
+import java.util.*;
 
 @Service
 public class AppService {
@@ -23,7 +27,7 @@ public class AppService {
         return "Basic " + encodedAuth;
     }
 
-    public String listAllSources() {
+    public List<ConnectorDetails> listAllSources(Boolean includeEnterpriseSources, Boolean includeMarketplaceSources) throws JsonProcessingException {
         String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_SOURCE_LIST_API_URL;
 
         HttpHeaders headers = new HttpHeaders();
@@ -35,10 +39,33 @@ public class AppService {
 
         String response = restTemplate.postForObject(url, entity, String.class);
 
-        return response;
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        List<ConnectorDetails> result = new ArrayList<ConnectorDetails>();
+        for (JsonNode sourceDefinition : jsonNode.get("sourceDefinitions")) {
+            boolean isEnterprise = sourceDefinition.get("enterprise").asBoolean();
+            boolean isMarketplace = sourceDefinition.get("supportLevel").asText().equals("community");
+            boolean exclude = false;
+            if (isEnterprise && !includeEnterpriseSources) {
+                exclude = true;
+            }
+            if(isMarketplace && !includeMarketplaceSources) {
+                exclude = true;
+            }
+            if (!exclude) {
+                ConnectorDetails sourceDetails = new ConnectorDetails(
+                        sourceDefinition.get("sourceDefinitionId").asText(),
+                        sourceDefinition.get("name").asText(),
+                        sourceDefinition.get("enterprise").asBoolean(),
+                        sourceDefinition.get("supportLevel").asText().equals("community"));
+                result.add(sourceDetails);
+            }
+        }
+        return result;
     }
 
-    public String listAllDest() {
+    public List<ConnectorDetails> listAllDest(Boolean includeEnterpriseSources, Boolean includeMarketplaceSources) throws JsonProcessingException {
         String url = Constants.AIRBYTE_HOST + Constants.AIRBYTE_DEST_LIST_API_URL;
 
         HttpHeaders headers = new HttpHeaders();
@@ -50,6 +77,29 @@ public class AppService {
 
         String response = restTemplate.postForObject(url, entity, String.class);
 
-        return response;
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        List<ConnectorDetails> result = new ArrayList<ConnectorDetails>();
+        for (JsonNode sourceDefinition : jsonNode.get("destinationDefinitions")) {
+            boolean isEnterprise = sourceDefinition.get("enterprise").asBoolean();
+            boolean isMarketplace = sourceDefinition.get("supportLevel").asText().equals("community");
+            boolean exclude = false;
+            if (isEnterprise && !includeEnterpriseSources) {
+                exclude = true;
+            }
+            if(isMarketplace && !includeMarketplaceSources) {
+                exclude = true;
+            }
+            if (!exclude) {
+                ConnectorDetails sourceDetails = new ConnectorDetails(
+                        sourceDefinition.get("destinationDefinitionId").asText(),
+                        sourceDefinition.get("name").asText(),
+                        sourceDefinition.get("enterprise").asBoolean(),
+                        sourceDefinition.get("supportLevel").asText().equals("community"));
+                result.add(sourceDetails);
+            }
+        }
+        return result;
     }
 }
