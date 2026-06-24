@@ -14,5 +14,5 @@ This App provides API interface to Airbyte functionality. APIs are authenicated 
 - AIRBYTE_PASSWORD
 
 **Swagger Documentation**
-- http(s)://<apphost>:<appport>/swagger-ui/index.html
+- http(s)://{{apphost}}:{{appport}}/swagger-ui/index.html
   Note: Application port can be modified in application.properties file
